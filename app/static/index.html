@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark light">
+  <title>Transcode Studio · NAS 文件转码工作台</title>
+  <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<svg class="sprite" aria-hidden="true">
+  <symbol id="i-logo" viewBox="0 0 32 32"><path d="M7 20.5V11.5L16 6l9 5.5v9L16 26l-9-5.5Z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="m11.5 17 3 3 6-7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-folder" viewBox="0 0 24 24"><path d="M3.5 7.5a2 2 0 0 1 2-2h4l2 2h7a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2v-10Z"/></symbol>
+  <symbol id="i-file" viewBox="0 0 24 24"><path d="M6 3.5h8l4 4v13H6v-17Z"/><path d="M14 3.5v4h4"/></symbol>
+  <symbol id="i-music" viewBox="0 0 24 24"><path d="M9 18V6l9-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="15.5" cy="16" r="2.5"/></symbol>
+  <symbol id="i-film" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="14" rx="2"/><path d="M8 5v14M16 5v14M3.5 9h4.5M3.5 15h4.5M16 9h4.5M16 15h4.5"/></symbol>
+  <symbol id="i-image" viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/><circle cx="9" cy="10" r="1.8"/><path d="m4.5 17 5-5 3.5 3.5 2.5-2.5 4 4"/></symbol>
+  <symbol id="i-archive" viewBox="0 0 24 24"><path d="M4 7.5 6 4h12l2 3.5V19a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7.5Z"/><path d="M4 7.5h16M10 4v3M14 4v3M12 11v3M12 16v1"/></symbol>
+  <symbol id="i-subtitle" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="14" rx="2"/><path d="M7 13.5h4M13 13.5h4M7 16.5h7"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="m9 6 8 6-8 6V6Z"/></symbol>
+  <symbol id="i-pause" viewBox="0 0 24 24"><path d="M8 6v12M16 6v12"/></symbol>
+  <symbol id="i-stop" viewBox="0 0 24 24"><rect x="6.5" y="6.5" width="11" height="11" rx="1.5"/></symbol>
+  <symbol id="i-undo" viewBox="0 0 24 24"><path d="M8 7H5v-3"/><path d="M5.5 7A8 8 0 1 1 4 14"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v5l3.5 2"/></symbol>
+  <symbol id="i-settings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1l2-1.5-2-3.5-2.3 1a7 7 0 0 0-1.7-1L14.5 3h-4l-.5 3a7 7 0 0 0-1.7 1L6 6 4 9.5 6 11a7 7 0 0 0 0 2l-2 1.5 2 3.5 2.3-1a7 7 0 0 0 1.7 1l.5 3h4l.5-3a7 7 0 0 0 1.7-1l2.3 1 2-3.5-2-1.5c.1-.3.1-.7.1-1Z"/></symbol>
+  <symbol id="i-grid" viewBox="0 0 24 24"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 11a8 8 0 1 0-2.3 6.7"/><path d="M20 5v6h-6"/></symbol>
+  <symbol id="i-chevron-right" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></symbol>
+  <symbol id="i-chevron-left" viewBox="0 0 24 24"><path d="m15 5-7 7 7 7"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4.5 4.5L19 7"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 4v11M7.5 10.5 12 15l4.5-4.5M5 19h14"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M5 7h14M9 7V4.5h6V7M7 7l1 12h8l1-12M10 11v4M14 11v4"/></symbol>
+  <symbol id="i-rotate" viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.3-5.7"/><path d="M20 4v5h-5"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 4 3.5 19h17L12 4Z"/><path d="M12 9v4.5M12 16.5v.1"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4 8.5 8.5 0 1 0 20 14.5Z"/></symbol>
+  <symbol id="i-folder-plus" viewBox="0 0 24 24"><path d="M3.5 7.5a2 2 0 0 1 2-2h4l2 2h7a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2v-10Z"/><path d="M12 11v5M9.5 13.5h5"/></symbol>
+</svg>
+
+<div class="app">
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark"><svg><use href="#i-logo"></use></svg></div>
+      <div class="brand-text">
+        <div class="brand-name">Transcode <span>Studio</span></div>
+        <div class="brand-sub">NAS MEDIA WORKBENCH</div>
+      </div>
+    </div>
+
+    <div class="top-status">
+      <span class="readonly-chip"><span class="lock-dot"></span>源目录只读</span>
+      <span class="engine-chip" id="engineChip"><span class="status-dot"></span><span id="engineText">引擎探测中</span></span>
+      <span class="queue-pill" id="queuePill">队列空闲</span>
+    </div>
+
+    <div class="top-actions">
+      <button class="icon-btn" id="formatsBtn" title="格式支持矩阵" aria-label="格式支持矩阵"><svg><use href="#i-grid"></use></svg></button>
+      <button class="btn ghost undo-btn" id="undoBtn" title="撤销最近一次操作（Ctrl+Z）" disabled>
+        <svg><use href="#i-undo"></use></svg><span>撤销</span>
+      </button>
+      <button class="icon-btn" id="historyBtn" title="操作历史" aria-label="操作历史"><svg><use href="#i-clock"></use></svg></button>
+      <button class="icon-btn" id="themeBtn" title="切换主题" aria-label="切换主题"><svg><use href="#i-sun"></use></svg></button>
+      <button class="icon-btn" id="settingsBtn" title="设置" aria-label="设置"><svg><use href="#i-settings"></use></svg></button>
+    </div>
+  </header>
+
+  <main class="dashboard">
+    <section class="panel browser-panel">
+      <header class="panel-head">
+        <div>
+          <h2>文件浏览器</h2>
+          <p id="sourceRootLabel">只读源</p>
+        </div>
+        <div class="head-tools">
+          <button class="icon-btn small" id="upBtn" title="上一级" aria-label="上一级"><svg><use href="#i-chevron-left"></use></svg></button>
+          <button class="icon-btn small" id="refreshBtn" title="刷新" aria-label="刷新"><svg><use href="#i-refresh"></use></svg></button>
+        </div>
+      </header>
+
+      <div class="browser-toolbar">
+        <div class="breadcrumbs" id="breadcrumbs"></div>
+      </div>
+
+      <div class="path-jump">
+        <div class="search-box path-box">
+          <svg><use href="#i-folder"></use></svg>
+          <input id="pathInput" type="text" placeholder="输入 NAS 路径，如 /home/user" autocomplete="off" spellcheck="false" maxlength="4096">
+        </div>
+        <button class="btn soft small path-enter" id="pathGoBtn">进入</button>
+      </div>
+
+      <div class="browser-filters">
+        <div class="type-chips" id="typeChips">
+          <button class="chip active" data-kind="all">全部</button>
+          <button class="chip" data-kind="audio">音频</button>
+          <button class="chip" data-kind="video">视频</button>
+          <button class="chip" data-kind="image">图片</button>
+          <button class="chip" data-kind="archive">压缩包</button>
+          <button class="chip" data-kind="subtitle">字幕</button>
+        </div>
+        <label class="toggle-mini" title="显示隐藏文件">
+          <input type="checkbox" id="hiddenToggle"><span></span>隐藏文件
+        </label>
+      </div>
+
+      <div class="search-row">
+        <div class="search-box">
+          <svg><use href="#i-search"></use></svg>
+          <input id="searchInput" type="search" placeholder="筛选当前目录…" autocomplete="off" spellcheck="false">
+        </div>
+      </div>
+
+      <div class="file-list" id="fileList" aria-live="polite"></div>
+
+      <footer class="browser-foot">
+        <div class="selection-info"><span id="selectionCount">0</span> 个已选<span class="dot-sep">·</span><span id="dirCount">0 项</span></div>
+        <div class="browser-foot-actions">
+          <button class="btn link" id="clearSelectionBtn" disabled>清空</button>
+          <button class="btn primary small" id="openTranscodeBtn" disabled><svg><use href="#i-play"></use></svg>加入队列</button>
+        </div>
+      </footer>
+    </section>
+
+    <section class="panel queue-panel">
+      <header class="panel-head">
+        <div>
+          <h2>任务队列</h2>
+          <p id="queueSubtitle">转码任务会在这里持续运行</p>
+        </div>
+        <div class="queue-counts" id="queueCounts"></div>
+      </header>
+
+      <div class="queue-controls">
+        <div class="control-group">
+          <button class="btn soft" id="pauseQueueBtn"><svg><use href="#i-pause"></use></svg>暂停</button>
+          <button class="btn soft" id="resumeQueueBtn" hidden><svg><use href="#i-play"></use></svg>继续</button>
+          <button class="btn danger-soft" id="stopQueueBtn"><svg><use href="#i-stop"></use></svg>终止</button>
+          <span class="control-sep"></span>
+          <button class="btn ghost" id="retryFailedBtn" disabled title="重新排队所有失败任务"><svg><use href="#i-rotate"></use></svg>重试失败</button>
+          <button class="btn ghost" id="clearCompletedBtn" disabled title="只删除已完成任务记录，不删除输出文件"><svg><use href="#i-trash"></use></svg>清理已完成</button>
+        </div>
+        <label class="concurrency-control" title="同时运行的任务数">
+          <span>并发</span>
+          <select id="concurrencySelect">
+            <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option>
+            <option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="queue-tabs" id="queueTabs">
+        <button class="active" data-filter="all">全部</button>
+        <button data-filter="active">进行中</button>
+        <button data-filter="done">已完成</button>
+        <button data-filter="failed">异常</button>
+      </div>
+
+      <div class="queue-list" id="queueList" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <section class="panel log-panel">
+    <header class="log-head">
+      <div class="log-title">
+        <span class="terminal-dots"><i></i><i></i><i></i></span>
+        <h2>运行日志</h2>
+        <span class="live-badge"><span class="pulse"></span>LIVE</span>
+      </div>
+      <div class="log-tools">
+        <select id="logLevel" class="mini-select">
+          <option value="all">全部级别</option>
+          <option value="info">INFO</option>
+          <option value="warn">WARN</option>
+          <option value="error">ERROR</option>
+        </select>
+        <label class="toggle-mini"><input type="checkbox" id="autoScroll" checked><span></span>自动滚动</label>
+        <button class="btn link" id="clearLogBtn">清屏</button>
+      </div>
+    </header>
+    <div class="log-body" id="logBody"></div>
+  </section>
+</div>
+
+<div class="toasts" id="toasts" aria-live="polite"></div>
+
+<!-- 转码配置 -->
+<div class="modal-backdrop" id="transcodeModal" hidden>
+  <div class="modal-card modal-xl" role="dialog" aria-modal="true" aria-labelledby="transcodeTitle">
+    <header class="modal-head">
+      <div>
+        <span class="eyebrow">NEW BATCH</span>
+        <h2 id="transcodeTitle">配置转码任务</h2>
+        <p><span id="transcodeCount">0</span> 个文件 · 源文件只读，输出始终为新文件</p>
+      </div>
+      <button class="icon-btn" data-close="transcodeModal" aria-label="关闭"><svg><use href="#i-x"></use></svg></button>
+    </header>
+    <div class="modal-body">
+      <div class="config-grid">
+        <div class="field">
+          <label>导出目录</label>
+          <div class="input-with-btn">
+            <input id="outputDirInput" readonly>
+            <button class="btn soft" id="pickOutputBtn"><svg><use href="#i-folder"></use></svg>浏览</button>
+          </div>
+        </div>
+        <div class="field">
+          <label>批量设置目标格式</label>
+          <select id="batchTargetSelect"><option value="">按文件类型推荐</option></select>
+        </div>
+        <div class="field">
+          <label>批量命名模板</label>
+          <div class="input-with-btn">
+            <input id="namePatternInput" value="{name}" maxlength="100" spellcheck="false">
+            <button class="btn soft" id="applyPatternBtn">应用</button>
+          </div>
+          <small>支持 {name} {target} {index} {date}</small>
+        </div>
+        <div class="field">
+          <label>质量预设</label>
+          <div class="preset-row" id="presetRow">
+            <button class="preset active" data-preset="balanced">均衡</button>
+            <button class="preset" data-preset="high">高质量</button>
+            <button class="preset" data-preset="compact">小体积</button>
+            <button class="preset" data-preset="lossless">无损优先</button>
+          </div>
+        </div>
+      </div>
+
+      <details class="advanced-box" id="advancedBox">
+        <summary>高级参数 <span>可选</span></summary>
+        <div class="advanced-grid">
+          <label>图片质量 <input id="optImageQuality" type="number" min="1" max="100" value="88"></label>
+          <label>音频码率
+            <select id="optAudioBitrate"><option>128k</option><option>192k</option><option>256k</option><option>320k</option></select>
+          </label>
+          <label>视频 CRF <input id="optVideoCrf" type="number" min="14" max="40" value="23"></label>
+          <label>视频预设
+            <select id="optVideoPreset"><option>veryfast</option><option>faster</option><option>fast</option><option>medium</option><option>slow</option></select>
+          </label>
+          <label>压缩级别 <input id="optArchiveLevel" type="number" min="0" max="9" value="5"></label>
+          <label class="check-line"><input id="optPreserveMeta" type="checkbox" checked>保留元数据</label>
+        </div>
+      </details>
+
+      <div class="table-toolbar">
+        <span>逐文件目标格式与命名</span>
+        <span class="muted">目标格式由当前镜像实际能力动态生成</span>
+      </div>
+      <div class="selection-table-wrap">
+        <table class="selection-table">
+          <thead><tr><th>源文件</th><th>转码为</th><th>输出文件名</th></tr></thead>
+          <tbody id="transcodeRows"></tbody>
+        </table>
+      </div>
+      <div class="safety-note"><svg><use href="#i-check"></use></svg><div><strong>安全写入</strong><span>只读取源文件；输出先写临时文件，校验后原子发布，目标重名自动加序号，绝不覆盖。</span></div></div>
+      <div class="form-error" id="transcodeError" hidden></div>
+    </div>
+    <footer class="modal-foot">
+      <button class="btn ghost" data-close="transcodeModal">取消</button>
+      <button class="btn primary" id="createJobsBtn"><svg><use href="#i-play"></use></svg>加入队列</button>
+    </footer>
+  </div>
+</div>
+
+<!-- 目录选择 -->
+<div class="modal-backdrop" id="pickerModal" hidden>
+  <div class="modal-card modal-md" role="dialog" aria-modal="true" aria-labelledby="pickerTitle">
+    <header class="modal-head">
+      <div><span class="eyebrow">EXPORT PATH</span><h2 id="pickerTitle">选择导出目录</h2><p>只能写入 /output 挂载卷</p></div>
+      <button class="icon-btn" data-close="pickerModal" aria-label="关闭"><svg><use href="#i-x"></use></svg></button>
+    </header>
+    <div class="modal-body">
+      <div class="path-jump picker-path-jump">
+        <div class="search-box path-box">
+          <svg><use href="#i-folder"></use></svg>
+          <input id="pickerPathInput" type="text" placeholder="输入 /output/... 或相对子目录" autocomplete="off" spellcheck="false" maxlength="4096">
+        </div>
+        <button class="btn soft small path-enter" id="pickerPathGoBtn">进入</button>
+      </div>
+      <div class="breadcrumbs picker-breadcrumbs" id="pickerBreadcrumbs"></div>
+      <div class="picker-list" id="pickerList"></div>
+      <div class="new-folder-row">
+        <input id="newFolderName" placeholder="新建文件夹名称" maxlength="80">
+        <button class="btn soft" id="createFolderBtn"><svg><use href="#i-folder-plus"></use></svg>新建</button>
+      </div>
+    </div>
+    <footer class="modal-foot">
+      <span class="picker-current" id="pickerCurrent"></span>
+      <div>
+        <button class="btn ghost" data-close="pickerModal">取消</button>
+        <button class="btn primary" id="chooseFolderBtn">选择此文件夹</button>
+      </div>
+    </footer>
+  </div>
+</div>
+
+<!-- 设置 -->
+<div class="modal-backdrop" id="settingsModal" hidden>
+  <div class="modal-card modal-lg" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+    <header class="modal-head">
+      <div><span class="eyebrow">PREFERENCES</span><h2 id="settingsTitle">设置</h2><p>设置保存在 /data/app.db，刷新与重启后仍生效</p></div>
+      <button class="icon-btn" data-close="settingsModal" aria-label="关闭"><svg><use href="#i-x"></use></svg></button>
+    </header>
+    <div class="modal-body settings-body">
+      <div class="settings-grid">
+        <div class="field"><label>默认并发数</label><select id="setConcurrency" class="wide"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option></select><small>建议 NAS 使用 1–2，避免影响其他服务</small></div>
+        <div class="field"><label>默认导出目录</label><div class="input-with-btn"><input id="setOutputDir" readonly><button class="btn soft" id="pickDefaultOutputBtn"><svg><use href="#i-folder"></use></svg>浏览</button></div></div>
+        <div class="field"><label>默认命名模板</label><input id="setNamePattern" maxlength="100"><small>{name} {target} {index} {date}</small></div>
+        <div class="field"><label>默认质量预设</label><select id="setQualityPreset" class="wide"><option value="balanced">均衡</option><option value="high">高质量</option><option value="compact">小体积</option><option value="lossless">无损优先</option></select></div>
+        <div class="field"><label>视频 CRF</label><input id="setVideoCrf" type="number" min="14" max="40"><small>越小画质越高、体积越大</small></div>
+        <div class="field"><label>图片质量</label><input id="setImageQuality" type="number" min="1" max="100"></div>
+        <div class="field"><label>音频码率</label><select id="setAudioBitrate" class="wide"><option>128k</option><option>160k</option><option>192k</option><option>256k</option><option>320k</option></select></div>
+        <div class="field"><label>压缩级别</label><input id="setArchiveLevel" type="number" min="0" max="9"></div>
+        <label class="check-line settings-check"><input id="setShowHidden" type="checkbox">默认显示隐藏文件</label>
+        <label class="check-line settings-check"><input id="setPreserveMeta" type="checkbox">默认保留元数据</label>
+      </div>
+      <div class="engine-info" id="engineInfo"></div>
+    </div>
+    <footer class="modal-foot">
+      <span class="muted">引擎探测结果缓存在服务端内存中</span>
+      <button class="btn soft" id="reprobeBtn" type="button" title="重新检测容器内的 ffmpeg / ImageMagick / 7-Zip">重新探测引擎</button>
+      <button class="btn ghost" data-close="settingsModal">取消</button>
+      <button class="btn primary" id="saveSettingsBtn">保存设置</button>
+    </footer>
+  </div>
+</div>
+
+<!-- 格式矩阵 -->
+<div class="modal-backdrop" id="formatsModal" hidden>
+  <div class="modal-card modal-xl" role="dialog" aria-modal="true" aria-labelledby="formatsTitle">
+    <header class="modal-head">
+      <div><span class="eyebrow">CAPABILITY MATRIX</span><h2 id="formatsTitle">格式支持矩阵</h2><p>根据容器内 ffmpeg / ImageMagick / 7-Zip 实时探测生成</p></div>
+      <button class="icon-btn" data-close="formatsModal" aria-label="关闭"><svg><use href="#i-x"></use></svg></button>
+    </header>
+    <div class="modal-body">
+      <div class="tool-strip" id="toolStrip"></div>
+      <div class="format-tabs" id="formatTabs"></div>
+      <div class="format-body" id="formatBody"></div>
+    </div>
+    <footer class="modal-foot"><span class="muted" id="formatFoot"></span><button class="btn ghost" data-close="formatsModal">关闭</button></footer>
+  </div>
+</div>
+
+<!-- 操作历史 -->
+<div class="modal-backdrop" id="actionsModal" hidden>
+  <div class="modal-card modal-lg" role="dialog" aria-modal="true" aria-labelledby="actionsTitle">
+    <header class="modal-head">
+      <div><span class="eyebrow">UNDO HISTORY</span><h2 id="actionsTitle">操作历史</h2><p>撤销和恢复仅作用于导出文件，不触碰源文件</p></div>
+      <button class="icon-btn" data-close="actionsModal" aria-label="关闭"><svg><use href="#i-x"></use></svg></button>
+    </header>
+    <div class="modal-body"><div class="action-list" id="actionList"></div></div>
+    <footer class="modal-foot"><button class="btn ghost" data-close="actionsModal">关闭</button></footer>
+  </div>
+</div>
+
+<!-- 确认 -->
+<div class="modal-backdrop" id="confirmModal" hidden>
+  <div class="modal-card modal-sm" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+    <header class="modal-head">
+      <div><span class="eyebrow">PLEASE CONFIRM</span><h2 id="confirmTitle">确认操作</h2><p id="confirmText"></p></div>
+    </header>
+    <footer class="modal-foot">
+      <button class="btn ghost" id="confirmCancel">取消</button>
+      <button class="btn danger" id="confirmOk">确认</button>
+    </footer>
+  </div>
+</div>
+
+<script src="/static/app.js" defer></script>
+</body>
+</html>

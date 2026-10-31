@@ -1,0 +1,52 @@
+name: nas-transcode-studio
+
+services:
+  transcode-studio:
+    build:
+      context: .
+      args:
+        BASE_IMAGE: ${BASE_IMAGE:-alpine:3.20}
+        APK_MIRROR: ${APK_MIRROR:-https://mirrors.aliyun.com/alpine}
+    image: nas-transcode-studio:1.0.0
+    container_name: nas-transcode-studio
+    restart: unless-stopped
+    init: true
+    network_mode: bridge
+    ports:
+      - "5124:5124"
+    volumes:
+      # Host root, read-only.  The application also refuses any write under /host.
+      - /:/host:ro
+      # Persistent queue/settings/logs and generated files.
+      - ./data:/data
+      - /home/user/文件上传备份/杂项/Docker容器目录/handbrake目录/output:/output
+    environment:
+      TZ: ${TZ:-Asia/Shanghai}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      MAX_ARCHIVE_GIB: ${MAX_ARCHIVE_GIB:-200}
+      MAX_ARCHIVE_ENTRIES: ${MAX_ARCHIVE_ENTRIES:-2000000}
+    read_only: true
+    tmpfs:
+      - /tmp:size=512m,mode=1777
+    cap_drop:
+      - ALL
+    cap_add:
+      # Read any NAS file regardless of its owner; write only into the two
+      # writable mounts.  No SYS_ADMIN, no docker.sock, no privileged mode.
+      - DAC_READ_SEARCH
+      - DAC_OVERRIDE
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 256
+    stop_grace_period: 20s
+    healthcheck:
+      test: ["CMD", "python3", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:5124/api/health', timeout=4)"]
+      interval: 30s
+      timeout: 6s
+      retries: 3
+      start_period: 25s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"

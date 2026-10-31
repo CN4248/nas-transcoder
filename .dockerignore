@@ -1,0 +1,14 @@
+# Build context stays tiny and deterministic.
+.git
+.gitignore
+.project-flow
+data
+output
+docs
+tests
+*.db
+*.log
+__pycache__
+*.pyc
+.env
+screenshots

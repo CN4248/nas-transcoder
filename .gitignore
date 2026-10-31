@@ -1,0 +1,9 @@
+__pycache__/
+*.py[cod]
+.env
+data/*
+!data/.gitkeep
+output/*
+!output/.gitkeep
+docs/screenshots/ui-*.png
+.DS_Store
